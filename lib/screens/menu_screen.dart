@@ -328,8 +328,10 @@ class _MenuScreenState extends State<MenuScreen> {
                         onTap: () async {
                           widget.audio.click();
                           await SharePlus.instance.share(
-                            'I\'m linking words in Word Link — swipe through letter tiles and find every hidden word! 🔗\n$_storeUrl',
-                            subject: 'Word Link',
+                            ShareParams(
+                              text: 'I\'m linking words in Word Link — swipe through letter tiles and find every hidden word! 🔗\n$_storeUrl',
+                              subject: 'Word Link',
+                            ),
                           );
                         },
                         theme: t,

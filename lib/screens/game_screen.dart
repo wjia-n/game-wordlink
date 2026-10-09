@@ -648,8 +648,10 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
             onTap: () async {
               _a.click();
               await SharePlus.instance.share(
-                '$subtitle\nCan you beat me in Word Link? 🔗\n$_storeUrl',
-                subject: 'Word Link',
+                ShareParams(
+                  text: '$subtitle\nCan you beat me in Word Link? 🔗\n$_storeUrl',
+                  subject: 'Word Link',
+                ),
               );
             },
             theme: t),

@@ -106,7 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               s.setVolume(v);
                               _applyAudio();
                             },
-                            activeThumbColor: t.accent,
+                            thumbColor: t.accent,
                             inactiveColor: t.boardEdge,
                           ),
                         ),
