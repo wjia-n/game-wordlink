@@ -1,26 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:wajiha_game_core/wajiha_game_core.dart';
-import 'game_screen.dart';
+import 'package:flutter/services.dart';
+import 'screens/splash_screen.dart';
+import 'services/audio_service.dart';
+import 'services/settings_service.dart';
 
-void main() => runApp(const WordLinkApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  final settings = WordLinkSettings();
+  await settings.load();
+  final audio = WordLinkAudio();
+  audio.configure(
+    musicOn: settings.musicOn,
+    sfxOn: settings.sfxOn,
+    volume: settings.volume,
+  );
+  runApp(WordLinkApp(settings: settings, audio: audio));
+}
 
-class WordLinkApp extends StatelessWidget {
-  const WordLinkApp({super.key});
+class WordLinkApp extends StatefulWidget {
+  final WordLinkSettings settings;
+  final WordLinkAudio audio;
+  const WordLinkApp({super.key, required this.settings, required this.audio});
+
+  @override
+  State<WordLinkApp> createState() => _WordLinkAppState();
+}
+
+class _WordLinkAppState extends State<WordLinkApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    widget.audio.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Pause (not stop) on interruption so music resumes exactly where it
+    // left off; game screens additionally freeze their engines.
+    if (state == AppLifecycleState.paused) {
+      widget.audio.onAppPaused();
+    } else if (state == AppLifecycleState.resumed) {
+      widget.audio.onAppResumed();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GameShell(
-      variant: ShellVariant.cozyPaper,
-      title: 'Word Link',
-      tagline: 'Swipe, link, and unleash your inner word wizard!',
-      emoji: '🔗',
-      slug: 'wordlink',
-      howToPlay:
-          '• 60 levels: swipe through touching letters (any direction!) to spell words.\n• Find every hidden word to clear the level — grids grow from 3×3 to 5×5.\n• Swipes work forwards or backwards, and you can backtrack mid-swipe.\n• Stuck? Hit 🔀 Shuffle for a fresh letter layout with the same words.\n• Every word is +10 pts, every level +25. Link them all! 🔗',
-      playerOptions: const [1],
-      supportsBots: false,
-      gameBuilder: (ctx, players, cb) =>
-          WordLinkScreen(players: players, callbacks: cb),
+    return ListenableBuilder(
+      listenable: widget.settings,
+      builder: (_, _) => MaterialApp(
+        title: 'Word Link',
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(audio: widget.audio, settings: widget.settings),
+      ),
     );
   }
 }
