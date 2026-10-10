@@ -62,7 +62,7 @@ class WordLinkSettings extends ChangeNotifier {
   int gamesPlayed = 0;
   int wordsFound = 0;
   int bestBlitz = 0;
-  bool isPro = false;
+  bool isPro = true; // everything unlocked — no Pro version
 
   /// Custom theme colors (ARGB ints). Defaults mirror Classic Oak.
   Map<String, int> customColors = Map.of(WordThemes.defaultCustomColors);
@@ -119,7 +119,7 @@ class WordLinkSettings extends ChangeNotifier {
     gamesPlayed = p.getInt(_kGames) ?? 0;
     wordsFound = p.getInt(_kWords) ?? 0;
     bestBlitz = p.getInt(_kBestBlitz) ?? 0;
-    isPro = p.getBool(_kIsPro) ?? false;
+    isPro = true; // everything unlocked
     for (final k in WordThemes.defaultCustomColors.keys) {
       customColors[k] =
           p.getInt('$_kCustomPrefix$k') ?? WordThemes.defaultCustomColors[k]!;

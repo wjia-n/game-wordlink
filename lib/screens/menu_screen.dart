@@ -41,19 +41,10 @@ class _MenuScreenState extends State<MenuScreen> {
     _store.init();
     _nameCtrl.text = widget.settings.playerNames.first;
     widget.audio.startMenuMusic();
-    _store.proPurchased.addListener(_onPro);
     _store.lastThanks.addListener(_onThanks);
   }
 
-  void _onPro() {
-    if (_store.proPurchased.value && mounted) {
-      widget.settings.setPro(true);
-      _store.proPurchased.value = false;
-      widget.audio.win();
-      setState(() {});
-    }
-  }
-
+  
   void _onThanks() {
     final msg = _store.lastThanks.value;
     if (msg == null || !mounted) return;
@@ -70,7 +61,6 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   void dispose() {
-    _store.proPurchased.removeListener(_onPro);
     _store.lastThanks.removeListener(_onThanks);
     _store.dispose();
     _nameCtrl.dispose();
