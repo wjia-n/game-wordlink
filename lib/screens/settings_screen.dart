@@ -3,6 +3,7 @@ import '../services/audio_service.dart';
 import '../services/settings_service.dart';
 import '../theme/word_themes.dart';
 import '../theme/widgets.dart';
+import '../transfer/transfer_ui.dart';
 
 /// Settings: audio toggles + volume, player name, journey progress reset.
 class SettingsScreen extends StatefulWidget {
@@ -71,6 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             builder: (_, _) => ListView(
               padding: const EdgeInsets.all(22),
               children: [
+              TransferSaveTile(gameSlug: 'wordlink'),
                 _section(t, 'SOUND & MUSIC', [
                   _switchRow(
                     t,
